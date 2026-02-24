@@ -1,0 +1,42 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+  <div id="content-main" dir="rtl">
+    <form method="GET" style="margin-bottom: 20px; padding: 20px; background: var(--body-bg); color: var(--body-fg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <label for="search-input" style="font-weight: bold; font-size: 15px;">پرسش خود را وارد کنید:</label><br /><br />
+
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="search-input" name="q" value="{{ query }}" style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--darkened-bg); color: var(--body-fg);" placeholder="مثلاً: جنگو چیست؟" />
+        <input type="submit" value="یافتن اسناد مرتبط" style="padding: 10px 20px; background: var(--primary); color: var(--button-fg); border: none; border-radius: 4px; cursor: pointer; font-weight: bold;" />
+      </div>
+    </form>
+
+    {% if query %}
+      <div class="results" style="background: var(--body-bg); color: var(--body-fg); padding: 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+        <h2 style="border-bottom: 2px solid var(--hairline-color); padding-bottom: 10px; margin-bottom: 20px;">نتایج یافت شده برای: «{{ query }}»</h2>
+
+        {% if results %}
+          <ul style="list-style-type: none; padding: 0; margin: 0;">
+            {% for item in results %}
+              <li style="border-bottom: 1px solid var(--hairline-color); padding-bottom: 15px; margin-bottom: 15px;">
+                <h3 style="margin: 0 0 10px 0; color: var(--primary); display: flex; align-items: center; gap: 10px;">
+                  {{ item.document.title }}
+                  <span style="font-size: 12px; color: var(--body-quiet-color); background: var(--selected-bg); padding: 4px 8px; border-radius: 12px; border: 1px solid var(--border-color); font-weight: normal;">امتیاز: {{ item.score }}</span>
+                </h3>
+                <p style="color: var(--body-quiet-color); margin: 0; line-height: 1.6;">{{ item.document.content|truncatechars:200 }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="errornote">هیچ سند مرتبطی یافت نشد.</p>
+        {% endif %}
+        {% if generated_answer %}
+          <div style="background: var(--selected-bg); border: 1px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="margin-top: 0; color: var(--primary);">پاسخ هوش مصنوعی:</h3>
+            <p style="margin-bottom: 0; font-size: 15px; line-height: 1.6;">{{ generated_answer }}</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
